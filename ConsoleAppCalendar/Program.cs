@@ -5,44 +5,78 @@ using System.Text;
 using System.Threading.Tasks;
 using NDesk.Options;
 
+using ConsoleAppCalendar.Interface;
+
+
 namespace ConsoleAppCalendar
 {
     class Program
     {
         //parse command line arguments http://www.ndesk.org/Options
         static void Main(string[] args) {
-            System.DateTime firstDate;
-            System.DateTime secondDate;
+            System.DateTime? firstDate = null;
+            System.DateTime? secondDate = null;
             String templateFilePath;
-            String outputPath;
-            bool show_help=false;
+            String outputPath="";
+
+            StatusStructure messageHandlingStatus = new StatusStructure { show_help = false, templateExpected = false, resultUnspecified = false };
+
             OptionSet p = new OptionSet()
-               .Add("date1|date1=", "First {DATE1} of span to generate calendar", delegate (string v) {
+               .Add("d1|date1=", "First {DATE1} of span to generate calendar", delegate (string v) {
                     if (v != null) {
                        firstDate = System.DateTime.Parse(v);
                    }
                })
-               .Add("date2|date2=", "Second {DATE2} of span to generate calendar", delegate (string v) {
+               .Add("d2|date2=", "Second {DATE2} of span to generate calendar", delegate (string v) {
                    if (v != null) {
                        secondDate = System.DateTime.Parse(v);
                    }
                })
-               .Add("h|?|help", "Show help message", delegate (string v) { show_help = v != null; })
-               .Add("template|template=", "{TEMPLATE} xml file", delegate (string v) {
+               .Add("h|?|help", "Show help message", delegate (string v) { messageHandlingStatus.show_help = (v != null); })
+               .Add("t|template=", "{TEMPLATE} xml file", delegate (string v) {
                    if (v != null) {
                        templateFilePath = v;
                    }
+                   else { messageHandlingStatus.templateExpected = true; }
                })
-               .Add("output|output=", "{RESULT} file with calendar: docx", delegate (string v) {
+               .Add("o|output=", "{RESULT} file with calendar: docx", delegate (string v) {
                    if (v != null)
                    {
                        outputPath = v;
                    }
+                   else {
+                       messageHandlingStatus.resultUnspecified = true;
+                       outputPath = String.Format("{0: yyyyMMdd_mmHHss}.docx", System.DateTime.Now);
+                   }
                });
-            if (show_help) {
-                DisplayHelpMessage(p);
+            try {
+                List<string> extra = p.Parse(args);
             }
-            List<string> extra = p.Parse(args);
+            catch (OptionException e) {
+                Console.WriteLine(e.Message);
+                p.WriteOptionDescriptions(Console.Out);
+            }
+            
+            if (messageHandlingStatus.show_help) { //user requested for help
+                DisplayHelpMessage(p);
+                return;
+            }
+            else {
+                if ((firstDate == null) || (secondDate == null)) {
+                    System.Console.WriteLine("Explicitly specify both dates");
+                    p.WriteOptionDescriptions(Console.Out);
+                    return;
+                } else
+                if (messageHandlingStatus.templateExpected == true ) {
+                    System.Console.WriteLine("Explicitly specify path to template");
+                    p.WriteOptionDescriptions(Console.Out);
+                    return;
+                }
+            }
+            if (messageHandlingStatus.resultUnspecified) {
+                System.Console.WriteLine("You have not specified path to result...");
+            }
+            System.Console.WriteLine("Writing to file {0}", outputPath);
         }
 
         private static void DisplayHelpMessage(OptionSet p)
