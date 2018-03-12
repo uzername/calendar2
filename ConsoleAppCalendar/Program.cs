@@ -77,6 +77,9 @@ namespace ConsoleAppCalendar
                 System.Console.WriteLine("You have not specified path to result...");
             }
             System.Console.WriteLine("Writing to file {0}", outputPath);
+            //==============Program. Main part.======================
+            CodeHandling myHandl = new CodeHandling();
+            myHandl.constructDocument();
         }
 
         private static void DisplayHelpMessage(OptionSet p)

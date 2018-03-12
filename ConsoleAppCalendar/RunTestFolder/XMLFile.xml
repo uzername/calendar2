@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+
+<template>
+  <meta dimension ="cm"> </meta>
+  <pageset page-width="29.7" page-height="21.0" margin-left="1.0" margin-right="1.0" margin-top="1.0" margin-bottom="1.0"> 
+    <table rows="2" cols="3"> 
+      <tablecell r="0" c="0"> 
+        <text align="center" fontheight="4.0">%date1%</text>
+        <text align="center" fontheight="3.0">%month1%</text>
+        <text align="left" fontheight="2.0">%importantdates1%</text>
+      </tablecell>
+      <tablecell r="0" c="1">
+        <text align="center" fontheight="4.0">%date2%</text>
+        <text align="center" fontheight="3.0">%month2%</text>
+        <text align="left" fontheight="2.0">%importantdates2%</text>
+      </tablecell>
+      <tablecell r="0" c="2">
+        <text align="center" fontheight="4.0">%date3%</text>
+        <text align="center" fontheight="3.0">%month3%</text>
+        <text align="left" fontheight="2.0">%importantdates3%</text>
+      </tablecell>
+      <tablecell r="1" c="0">
+        <text align="center" fontheight="4.0">%date4%</text>
+        <text align="center" fontheight="3.0">%month4%</text>
+        <text align="left" fontheight="2.0">%importantdates4%</text>
+      </tablecell>
+      <tablecell r="1" c="1">
+        <text align="center" fontheight="4.0">%date5%</text>
+        <text align="center" fontheight="3.0">%month5%</text>
+        <text align="left" fontheight="2.0">%importantdates5%</text>
+      </tablecell>
+      <tablecell r="1" c="2">
+        <text align="center" fontheight="4.0">%date6%</text>
+        <text align="center" fontheight="3.0">%month6%</text>
+        <text align="left" fontheight="2.0">%importantdates6%</text>
+      </tablecell>
+      
+    </table>
+  </pageset>
+</template>
