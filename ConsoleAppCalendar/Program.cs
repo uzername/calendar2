@@ -79,7 +79,10 @@ namespace ConsoleAppCalendar
             System.Console.WriteLine("Writing to file {0}", outputPath);
             //==============Program. Main part.======================
             CodeHandling myHandl = new CodeHandling();
-            myHandl.constructDocument();
+            GenericDocumentParameters genericDocumentParameters = new GenericDocumentParameters();
+
+            myHandl.constructDocument(firstDate.GetValueOrDefault(), secondDate.GetValueOrDefault());
+            myHandl.fromvariableCreateDocument(genericDocumentParameters);
         }
 
         private static void DisplayHelpMessage(OptionSet p)
