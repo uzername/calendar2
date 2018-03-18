@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppCalendar", "Conso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Words.NET", "vendor\Xceed.Words.NET\Xceed.Words.NET.csproj", "{E863D072-AA8B-4108-B5F1-785241B37F67}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SunSetRiseLib", "vendor\SunSetRiseLib\SunSetRiseLib.csproj", "{C67858A5-FD62-47DA-B858-CB8AB09644E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{E863D072-AA8B-4108-B5F1-785241B37F67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E863D072-AA8B-4108-B5F1-785241B37F67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E863D072-AA8B-4108-B5F1-785241B37F67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C67858A5-FD62-47DA-B858-CB8AB09644E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C67858A5-FD62-47DA-B858-CB8AB09644E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C67858A5-FD62-47DA-B858-CB8AB09644E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C67858A5-FD62-47DA-B858-CB8AB09644E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

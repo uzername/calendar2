@@ -73,6 +73,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\vendor\SunSetRiseLib\SunSetRiseLib.csproj">
+      <Project>{c67858a5-fd62-47da-b858-cb8ab09644e9}</Project>
+      <Name>SunSetRiseLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\vendor\Xceed.Words.NET\Xceed.Words.NET.csproj">
       <Project>{e863d072-aa8b-4108-b5f1-785241b37f67}</Project>
       <Name>Xceed.Words.NET</Name>

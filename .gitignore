@@ -260,3 +260,5 @@ paket-files/
 __pycache__/
 *.pyc
 /ConsoleAppCalendar/RunTestFolder/Indentation.docx
+/ConsoleAppCalendar/RunTestFolder/MyDocument
+/ConsoleAppCalendar/RunTestFolder/MyDocument.docx
