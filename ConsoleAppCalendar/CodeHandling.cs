@@ -78,8 +78,18 @@ namespace ConsoleAppCalendar
             document.Save();
         }
         public void fromvariableCreateDocument(GenericDocumentParameters in_documentArgs) {
-            DocX document = DocX.Create(in_documentArgs.documentName);
 
+                DocX document = DocX.Create(in_documentArgs.documentName);
+            // https://stackoverflow.com/a/90699/
+            ConsoleAppCalendar.Properties.Resources.sunrise1f305.Save("sunrisetmp.png");
+            ConsoleAppCalendar.Properties.Resources.sunset1f307.Save("sunsettmp.png");
+            // https://xceed.com/wp-content/documentation/xceed-words-for-net/Xceed.Words.NET~Xceed.Words.NET.DocX~AddImage(Stream,String).html
+            Xceed.Words.NET.Image imgSunrise = document.AddImage("sunrisetmp.png"); Xceed.Words.NET.Picture picSunrise = imgSunrise.CreatePicture();
+                picSunrise.Height = (int) Math.Round ( picSunrise.Height * 0.32 );
+                picSunrise.Width = (int)Math.Round( picSunrise.Width * 0.32 );
+                Xceed.Words.NET.Image imgSunset = document.AddImage("sunsettmp.png"); Xceed.Words.NET.Picture picSunset = imgSunset.CreatePicture();
+            picSunset.Height = (int)Math.Round(picSunset.Height * 0.38);
+            picSunset.Width = (int)Math.Round(picSunset.Width * 0.38);
             System.DateTime theCurrentDate = date1;
             do
             {
@@ -90,8 +100,8 @@ namespace ConsoleAppCalendar
                 Table insertedTable = document.InsertTable(in_documentArgs.numrowsTable, in_documentArgs.numcolsTable);
                 Border b = new Border(BorderStyle.Tcbs_single, BorderSize.one, 0, Color.Blue);
                 //calculate each column width
-                float bestColumnWidth = cmToPixels( ((float)in_documentArgs.pageWidth - (float)(leftMargin + rightMargin)) / (float)(in_documentArgs.numcolsTable) );
-                float bestRowHeightPt = ( ((float)in_documentArgs.pageHeight - (float)(topMargin + btmMargin)) / (float)(in_documentArgs.numcolsTable) );
+                float bestColumnWidth = cmToPixels(((float)in_documentArgs.pageWidth - (float)(leftMargin + rightMargin)) / (float)(in_documentArgs.numcolsTable));
+                float bestRowHeightPt = (((float)in_documentArgs.pageHeight - (float)(topMargin + btmMargin)) / (float)(in_documentArgs.numcolsTable));
                 // Set the tables Top, Bottom, Left and Right Borders to b.
                 insertedTable.SetBorder(TableBorderType.Top, b);
                 insertedTable.SetBorder(TableBorderType.Bottom, b);
@@ -100,27 +110,38 @@ namespace ConsoleAppCalendar
                 insertedTable.SetBorder(TableBorderType.InsideH, b);
                 insertedTable.SetBorder(TableBorderType.InsideV, b);
                 byte currentRow = 0; byte currentCol = 0;
-                while ((currentRow < in_documentArgs.numrowsTable) && (currentCol < in_documentArgs.numcolsTable)&& (theCurrentDate <= date2)) {
-                    Paragraph yearMonthP = insertedTable.Rows[currentRow].Cells[currentCol].InsertParagraph(String.Format("{0:yyyy, MMMM}", theCurrentDate));
-                    Paragraph dayNumberP = insertedTable.Rows[currentRow].Cells[currentCol].InsertParagraph(String.Format("{0:dd}", theCurrentDate));
-                    Paragraph weekdayP = insertedTable.Rows[currentRow].Cells[currentCol].InsertParagraph(String.Format("{0:dddd}", theCurrentDate));
+                while ((currentRow < in_documentArgs.numrowsTable) && (currentCol < in_documentArgs.numcolsTable) && (theCurrentDate <= date2)) {
+                    Table internalTable1 = insertedTable.Rows[currentRow].Cells[currentCol].InsertTable(1, 2);
+                    internalTable1.SetWidthsPercentage(new float[] { 18.0f, 82.0f }, 100.0f);
+                    /*
+                        Paragraph yearMonthP = insertedTable.Rows[currentRow].Cells[currentCol].InsertParagraph(String.Format("{0:yyyy, MMMM}", theCurrentDate));
+                        Paragraph dayNumberP = insertedTable.Rows[currentRow].Cells[currentCol].InsertParagraph(String.Format("{0:dd}", theCurrentDate));
+                        Paragraph weekdayP = insertedTable.Rows[currentRow].Cells[currentCol].InsertParagraph(String.Format("{0:dddd}", theCurrentDate));
+                    */
+                    Paragraph yearMonthP = internalTable1.Rows[0].Cells[1].InsertParagraph(String.Format("{0:yyyy, MMMM}", theCurrentDate));
+                    Paragraph dayNumberP = internalTable1.Rows[0].Cells[1].InsertParagraph(String.Format("{0:dd}", theCurrentDate));
+                    Paragraph weekdayP = internalTable1.Rows[0].Cells[1].InsertParagraph(String.Format("{0:dddd}", theCurrentDate));
                     yearMonthP.Alignment = Alignment.center; yearMonthP.Font("Courier New");
                     dayNumberP.Alignment = Alignment.center; dayNumberP.Font("Courier New"); dayNumberP.FontSize(15); dayNumberP.Bold();
                     weekdayP.Alignment = Alignment.center; weekdayP.Font("Courier New");
 
                     Tuple<string, string> sunTimes = getSunsetAndSunRise(true, 2, theCurrentDate, 49.4444, 32.0597);
-                    insertedTable.Rows[currentRow].Cells[currentCol].InsertParagraph(String.Format("{0} : {1}", sunTimes.Item1, sunTimes.Item2));
-
-
+                    Paragraph sunriseParagraph = internalTable1.Rows[0].Cells[0].InsertParagraph(String.Format("{0}", sunTimes.Item1));
+                        // https://xceed.com/wp-content/documentation/xceed-words-for-net/webframe.html#Xceed.Words.NET~Xceed.Words.NET.Paragraph~InsertPicture.html
+                        sunriseParagraph.InsertPicture(picSunrise);
+                    Paragraph sunsetParagraph = internalTable1.Rows[0].Cells[0].InsertParagraph(String.Format("{0}", sunTimes.Item2));
+                    sunsetParagraph.InsertPicture(picSunset);
+                    internalTable1.Rows[0].Cells[1].Paragraphs[0].Remove(false);
+                    internalTable1.Rows[0].Cells[0].Paragraphs[0].Remove(false);
                     insertedTable.Rows[currentRow].Cells[currentCol].Paragraphs[0].Remove(false);
                     insertedTable.SetColumnWidth(currentCol, bestColumnWidth);
                     // 100*2/3pt -> 3.53 cm
                     // x  px -> bestRowHeightCm
-                    insertedTable.Rows[currentRow].Height = Math.Round(bestRowHeightPt*0.88);
+                    insertedTable.Rows[currentRow].Height = Math.Round(bestRowHeightPt * 0.88);
 
                     theCurrentDate = theCurrentDate.AddDays(1.0);
                     currentCol++;
-                    if ((currentCol >= in_documentArgs.numcolsTable)&&(currentRow<in_documentArgs.numrowsTable-1)) {
+                    if ((currentCol >= in_documentArgs.numcolsTable) && (currentRow < in_documentArgs.numrowsTable - 1)) {
                         currentCol = 0; currentRow++;
                     }
                 }
@@ -129,10 +150,11 @@ namespace ConsoleAppCalendar
                     insertedTable.InsertPageBreakAfterSelf();
                 }
             } while (theCurrentDate <= date2);
-            
-            
+
+
             //document.InsertTable(in_documentArgs.numrowsTable, in_documentArgs.numcolsTable);
             document.Save();
         }
-    }
+        }
+    
 }
