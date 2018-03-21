@@ -33,7 +33,7 @@ namespace ConsoleAppCalendar
                    }
                })
                .Add("h|?|help", "Show help message", delegate (string v) { messageHandlingStatus.show_help = (v != null); })
-               .Add("t|template=", "{TEMPLATE} xml file", delegate (string v) {
+               .Add("t|template=", "{TEMPLATE} xml file containing list of important dates", delegate (string v) {
                    if (v != null) {
                        templateFilePath = v;
                    }
