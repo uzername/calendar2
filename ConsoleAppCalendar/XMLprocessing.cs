@@ -35,5 +35,9 @@ namespace XMLprocessing {
                 
 				return XmlData;
 		}
+	    public Dictionary<System.DateTime, List<importantday>> getDictionaryForProcessing (importantdays in_importantdays) {
+	        Dictionary<System.DateTime, List<importantday>> valueToReturn = new Dictionary<System.DateTime, List<importantday>>();
+		return valueToReturn;
+	    }
 	}
 }
