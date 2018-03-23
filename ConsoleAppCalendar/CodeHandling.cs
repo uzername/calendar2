@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using SunSetRiseLib;
 using Xceed.Words.NET;
+using XMLprocessing;
 
 namespace ConsoleAppCalendar
 {
@@ -77,8 +78,12 @@ namespace ConsoleAppCalendar
             document.PageWidth = 250f;
             document.Save();
         }
-        public void fromvariableCreateDocument(GenericDocumentParameters in_documentArgs) {
-
+        public void fromvariableCreateDocument(GenericDocumentParameters in_documentArgs, String obtainedPath) {
+            //prepare important days list
+            MainXMLprocessor importantDaysProcessor = new MainXMLprocessor();
+            importantdays alldaysListRaw = importantDaysProcessor.loadImportantDaysListFromFile(obtainedPath);
+            Dictionary<System.DateTime, List<importantday>> importantDaysProcessed = importantDaysProcessor.getDictionaryForProcessing(alldaysListRaw);
+            //=========
                 DocX document = DocX.Create(in_documentArgs.documentName);
             // https://stackoverflow.com/a/90699/
             ConsoleAppCalendar.Properties.Resources.sunrise1f305.Save("sunrisetmp.png");
@@ -112,7 +117,7 @@ namespace ConsoleAppCalendar
                 byte currentRow = 0; byte currentCol = 0;
                 while ((currentRow < in_documentArgs.numrowsTable) && (currentCol < in_documentArgs.numcolsTable) && (theCurrentDate <= date2)) {
                     Table internalTable1 = insertedTable.Rows[currentRow].Cells[currentCol].InsertTable(1, 2);
-                    internalTable1.SetWidthsPercentage(new float[] { 18.0f, 82.0f }, 100.0f);
+                    internalTable1.SetWidthsPercentage(new float[] { 30.0f, 70.0f }, 100.0f);
                     /*
                         Paragraph yearMonthP = insertedTable.Rows[currentRow].Cells[currentCol].InsertParagraph(String.Format("{0:yyyy, MMMM}", theCurrentDate));
                         Paragraph dayNumberP = insertedTable.Rows[currentRow].Cells[currentCol].InsertParagraph(String.Format("{0:dd}", theCurrentDate));
@@ -137,6 +142,20 @@ namespace ConsoleAppCalendar
                     insertedTable.SetColumnWidth(currentCol, bestColumnWidth);
                     // 100*2/3pt -> 3.53 cm
                     // x  px -> bestRowHeightCm
+                    if (importantDaysProcessed.ContainsKey(theCurrentDate))
+                    {
+                        List<importantday> eventsForCurrentDate = importantDaysProcessed[theCurrentDate];
+                        foreach (importantday specialevent in eventsForCurrentDate)
+                        {
+                            Paragraph eventParagraph = insertedTable.Rows[currentRow].Cells[currentCol].InsertParagraph("\u25EF "+specialevent.description);
+                            eventParagraph.Font("Courier New");
+                            if (specialevent.typeOfDay == "holiday") {
+                                Paragraph officialWeekendParagraph = internalTable1.Rows[0].Cells[1].InsertParagraph("/вихідний/");
+                                officialWeekendParagraph.Alignment = Alignment.center; officialWeekendParagraph.Font("Courier New"); officialWeekendParagraph.FontSize(7.0); officialWeekendParagraph.Bold();
+                            }
+                        }
+                    }
+
                     insertedTable.Rows[currentRow].Height = Math.Round(bestRowHeightPt * 0.88);
 
                     theCurrentDate = theCurrentDate.AddDays(1.0);
@@ -145,6 +164,7 @@ namespace ConsoleAppCalendar
                         currentCol = 0; currentRow++;
                     }
                 }
+
                 if (theCurrentDate <= date2) {
                     //document.InsertSectionPageBreak();
                     insertedTable.InsertPageBreakAfterSelf();

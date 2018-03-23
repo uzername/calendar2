@@ -16,7 +16,7 @@ namespace ConsoleAppCalendar
         static void Main(string[] args) {
             System.DateTime? firstDate = null;
             System.DateTime? secondDate = null;
-            String templateFilePath;
+            String templateFilePath="";
             String outputPath="";
 
             StatusStructure messageHandlingStatus = new StatusStructure { show_help = false, templateExpected = false, resultUnspecified = false };
@@ -82,7 +82,7 @@ namespace ConsoleAppCalendar
             GenericDocumentParameters genericDocumentParameters = new GenericDocumentParameters();
 
             myHandl.constructDocument(firstDate.GetValueOrDefault(), secondDate.GetValueOrDefault());
-            myHandl.fromvariableCreateDocument(genericDocumentParameters);
+            myHandl.fromvariableCreateDocument(genericDocumentParameters, templateFilePath);
         }
 
         private static void DisplayHelpMessage(OptionSet p)
