@@ -22,7 +22,7 @@ namespace ConsoleAppCalendar
             documentName = "MyDocument.docx";
             pageWidth = CodeHandling.cmToPoints(29.7f);
             pageHeight = CodeHandling.cmToPoints(21.0f);
-            numcolsTable = 3; numrowsTable = 3;
+            numcolsTable = 3; numrowsTable = 4;
         }
     }
     public class CodeHandling
@@ -106,7 +106,7 @@ namespace ConsoleAppCalendar
                 Border b = new Border(BorderStyle.Tcbs_single, BorderSize.one, 0, Color.Blue);
                 //calculate each column width
                 float bestColumnWidth = cmToPixels(((float)in_documentArgs.pageWidth - (float)(leftMargin + rightMargin)) / (float)(in_documentArgs.numcolsTable));
-                float bestRowHeightPt = (((float)in_documentArgs.pageHeight - (float)(topMargin + btmMargin)) / (float)(in_documentArgs.numcolsTable));
+                float bestRowHeightPt = (((float)in_documentArgs.pageHeight - (float)(topMargin + btmMargin)) / (float)(in_documentArgs.numrowsTable));
                 // Set the tables Top, Bottom, Left and Right Borders to b.
                 insertedTable.SetBorder(TableBorderType.Top, b);
                 insertedTable.SetBorder(TableBorderType.Bottom, b);
@@ -145,11 +145,13 @@ namespace ConsoleAppCalendar
                     if (importantDaysProcessed.ContainsKey(theCurrentDate))
                     {
                         List<importantday> eventsForCurrentDate = importantDaysProcessed[theCurrentDate];
+                        bool holidayDisplayed = false;
                         foreach (importantday specialevent in eventsForCurrentDate)
                         {
                             Paragraph eventParagraph = insertedTable.Rows[currentRow].Cells[currentCol].InsertParagraph("\u25EF "+specialevent.description);
                             eventParagraph.Font("Courier New");
-                            if (specialevent.typeOfDay == "holiday") {
+                            if ((specialevent.typeOfDay == "holiday")&&(holidayDisplayed==false)) {
+                                holidayDisplayed = true;
                                 Paragraph officialWeekendParagraph = internalTable1.Rows[0].Cells[1].InsertParagraph("/вихідний/");
                                 officialWeekendParagraph.Alignment = Alignment.center; officialWeekendParagraph.Font("Courier New"); officialWeekendParagraph.FontSize(7.0); officialWeekendParagraph.Bold();
                             }
@@ -174,6 +176,8 @@ namespace ConsoleAppCalendar
 
             //document.InsertTable(in_documentArgs.numrowsTable, in_documentArgs.numcolsTable);
             document.Save();
+            System.IO.File.Delete("sunsettmp.png");
+            System.IO.File.Delete("sunrise.png");
         }
         }
     

@@ -591,7 +591,7 @@ namespace SunSetRiseLib
                     minute = 0;
                     hour += 1;
                 }
-                output = String.Format("{0} : {1}", hour, minute);
+                output = String.Format("{0:00} : {1:00}", hour, minute);
             }
             else
             {
